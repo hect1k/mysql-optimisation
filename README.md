@@ -1,6 +1,6 @@
-# MySQL Performance Optimization Overview
+# MySQL Performance Optimization with Django
 
-This project demonstrates practical MySQL performance optimization strategies using a large synthetic dataset and complex queries. It showcases techniques for improving query execution time, data integrity, and overall efficiency in a transactional environment.
+This project demonstrates practical MySQL performance optimization strategies implemented through a single Django management command, using a large synthetic dataset and complex queries. It covers techniques to improve query execution time, data integrity, and overall efficiency in transactional environments.
 
 ---
 
@@ -8,9 +8,10 @@ This project demonstrates practical MySQL performance optimization strategies us
 
 ### Prerequisites
 
-- Python 3.8+
-- MySQL 8.0+
-- All required Python packages listed in `requirements.txt`
+* Python 3.8+
+* Django (tested with Django 4.x)
+* MySQL 8.0+
+* Required Python packages (`mysql-connector-python`, `rich`)
 
 ### Setup
 
@@ -22,18 +23,48 @@ This project demonstrates practical MySQL performance optimization strategies us
    pip install -r requirements.txt
    ```
 
-2. Start your MySQL server and ensure you have the appropriate user credentials.
+2. Configure your MySQL database in Django’s `settings.py`:
 
-3. Run the following scripts in order:
-
-   ```bash
-   python generate_data.py
-   python main.py
+   ```python
+   DATABASES = {
+       'default': {
+           'ENGINE': 'django.db.backends.mysql',
+           'NAME': 'test_performance',
+           'USER': 'root',
+           'PASSWORD': 'root',
+           'HOST': 'localhost',
+           'PORT': '3306',
+       }
+   }
    ```
 
-   * `generate_data.py`: Generates and inserts the dataset into MySQL.
-   * `main.py`: Executes performance tests and showcases optimization results.
+3. Add your app containing the management command to `INSTALLED_APPS`.
 
+---
+
+## Usage
+
+Generate synthetic data with:
+
+```bash
+python manage.py generate_data
+```
+
+Run the full benchmarking and optimization workflow with:
+
+```bash
+python manage.py full_benchmark
+```
+
+This command will:
+
+* Drop existing indexes
+* Run complex benchmark queries and measure execution time
+* Alter the table schema (add generated columns, change storage engine)
+* Create recommended indexes
+* Run benchmarks again to compare before-and-after performance
+
+The output will be nicely formatted with the `rich` library for easy interpretation.
 
 ---
 
@@ -126,6 +157,10 @@ SQL queries were optimized through:
 | Query Optimization         | Efficient SQL construction        | Reduced resource usage per query        |
 
 ---
+
+## Results
+
+![Benchmark Results](results.png)
 
 ## Potential Disadvantages
 
